@@ -1,0 +1,934 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model att_log {
+  sn         String   @db.VarChar(30)
+  scan_date  DateTime @db.DateTime(0)
+  pin        String   @db.VarChar(32)
+  verifymode Int
+  inoutmode  Int      @default(0)
+  reserved   Int      @default(0)
+  work_code  Int      @default(0)
+  att_id     String   @default("0") @db.VarChar(50)
+
+  @@id([sn, scan_date, pin])
+  @@index([pin], map: "pin")
+  @@index([sn], map: "sn")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model att_log_temp {
+  sn         String   @db.VarChar(30)
+  scan_date  DateTime @db.DateTime(0)
+  pin        String   @db.VarChar(32)
+  verifymode Int
+  inoutmode  Int      @default(0)
+  reserved   Int      @default(0)
+  work_code  Int      @default(0)
+  att_id     String   @default("0") @db.VarChar(50)
+
+  @@ignore
+}
+
+model calender {
+  date DateTime @id @db.Date
+}
+
+model cuti_normatif {
+  cuti_n_id   Int    @id @default(0)
+  cuti_n_nama String @db.VarChar(100)
+  cuti_n_lama Int    @default(0) @db.SmallInt
+  nominal     Float  @default(0) @db.Float
+  jns_bayar   Int    @default(0) @db.TinyInt
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model dev_type {
+  dev_type Int
+  id_type  Int
+  type     String @db.VarChar(100)
+
+  @@ignore
+}
+
+model device {
+  sn                String    @id @default("") @db.VarChar(30)
+  activation_code   String    @db.VarChar(50)
+  act_code_realtime String?   @db.VarChar(50)
+  device_name       String?   @default("") @db.VarChar(100)
+  dev_id            Int       @default(1) @db.SmallInt
+  comm_type         Int       @default(0) @db.TinyInt
+  ip_address        String?   @default("") @db.VarChar(30)
+  id_type           Int       @default(0)
+  dev_type          Int       @default(0) @db.TinyInt
+  comm_key          String?   @default("0") @db.VarChar(50)
+  serial_port       String?   @default("") @db.VarChar(30)
+  baud_rate         String?   @default("") @db.VarChar(15)
+  ethernet_port     String    @default("4370") @db.VarChar(30)
+  layar             Int       @default(0) @db.TinyInt
+  alg_ver           Int       @default(10) @db.TinyInt
+  use_realtime      Int       @default(0) @db.TinyInt
+  group_realtime    Int       @default(0) @db.TinyInt
+  last_download     DateTime? @db.Date
+  ATTLOGStamp       String    @default("0") @db.VarChar(50)
+  OPERLOGStamp      String    @default("0") @db.VarChar(50)
+  ATTPHOTOStamp     String    @default("0") @db.VarChar(50)
+  cloud_id          String    @default("") @db.VarChar(100)
+  last_download_web DateTime? @db.Date
+  id_server_use     Int       @default(-1)
+}
+
+model ganti_jdw_d {
+  ganti_jdw_id   Int
+  tgl_ganti_jdw  DateTime @db.Date
+  jns_ganti_jdw  Int      @db.TinyInt
+  jdw_kerja_m_id Int
+  pegawai_id     Int      @default(0)
+
+  @@id([ganti_jdw_id, tgl_ganti_jdw, pegawai_id, jns_ganti_jdw, jdw_kerja_m_id])
+}
+
+model ganti_jdw_jk {
+  ganti_jdw_id    Int      @id
+  jdw_kerja_m_id1 Int
+  jdw_kerja_m_id2 Int
+  tgl_awal        DateTime @db.Date
+  tgl_akhir       DateTime @db.Date
+  keterangan      String   @db.VarChar(200)
+}
+
+model ganti_jdw_pegawai {
+  ganti_jdw_id   Int      @id @default(0)
+  pegawai_id     Int      @default(0)
+  tgl_awal       DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  tgl_akhir      DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jdw_kerja_m_id Int      @default(0)
+  keterangan     String   @default("0") @db.VarChar(200)
+}
+
+model ganti_jdw_pembagian {
+  ganti_jdw_id   Int      @id @default(0)
+  pembagian1_id  Int      @default(0)
+  pembagian2_id  Int      @default(0)
+  pembagian3_id  Int      @default(0)
+  tgl_awal       DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  tgl_akhir      DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jdw_kerja_m_id Int      @default(0)
+  keterangan     String   @default("0") @db.VarChar(200)
+}
+
+model ganti_jk {
+  ganti_jk_id Int      @id
+  jk_id1      Int
+  jk_id2      Int
+  tgl_awal    DateTime @db.Date
+  tgl_akhir   DateTime @db.Date
+  keterangan  String   @db.VarChar(200)
+}
+
+model ganti_jk_d {
+  ganti_jk_id  Int
+  tgl_ganti_jk DateTime @db.Date
+  jns_ganti_jk Int      @db.TinyInt
+  jk_id        Int
+  pegawai_id   Int      @default(0)
+  libur        Int      @default(0) @db.TinyInt
+
+  @@id([ganti_jk_id, tgl_ganti_jk, pegawai_id, jns_ganti_jk, jk_id])
+}
+
+model ganti_jk_pegawai {
+  ganti_jk_id Int      @id @default(0)
+  pegawai_id  Int      @default(0)
+  tgl_awal    DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  tgl_akhir   DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jk_id       Int      @default(0)
+  keterangan  String   @default("0") @db.VarChar(200)
+}
+
+model ganti_jk_pembagian {
+  ganti_jk_id   Int      @id @default(0)
+  pembagian1_id Int      @default(0)
+  pembagian2_id Int      @default(0)
+  pembagian3_id Int      @default(0)
+  tgl_awal      DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  tgl_akhir     DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jk_id         Int      @default(0)
+  keterangan    String   @default("0") @db.VarChar(200)
+}
+
+model grp_user_d {
+  grp_user_id String @default("") @db.VarChar(100)
+  tree_id     String @db.VarChar(255)
+  level_tree  Int    @default(0) @db.SmallInt
+  com_id      String @unique(map: "com_id") @db.VarChar(100)
+  com_form    String @db.VarChar(100)
+  com_name    String @db.VarChar(100)
+  caption     String @db.VarChar(255)
+  urutan      Int    @db.SmallInt
+  app_name    String @default("") @db.VarChar(100)
+}
+
+model grp_user_m {
+  grp_user_id     Int      @id
+  grp_user_name   String   @default("") @db.VarChar(100)
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(100)
+  detector        String   @db.Text
+}
+
+model index_ot {
+  index_id   Int   @id @db.TinyInt
+  type_ot    Int   @default(0) @db.TinyInt
+  from_ot    Int   @db.SmallInt
+  to_ot      Int   @db.SmallInt
+  multiplier Float @db.Float
+}
+
+model index_type {
+  type_ot   Int    @id @default(0) @db.TinyInt
+  type_name String @db.VarChar(50)
+}
+
+model izin {
+  pegawai_id         Int       @default(0)
+  izin_urutan        Int       @default(0) @db.SmallInt
+  izin_tgl_pengajuan DateTime  @db.Date
+  izin_tgl           DateTime  @db.Date
+  izin_jenis_id      Int       @default(0) @db.SmallInt
+  izin_catatan       String?   @db.VarChar(255)
+  izin_status        Int       @default(1) @db.TinyInt
+  izin_tinggal_t1    DateTime? @db.Time(0)
+  izin_tinggal_t2    DateTime? @db.Time(0)
+  cuti_n_id          Int?      @default(0)
+  izin_ket_lain      String?   @db.VarChar(100)
+  izin_noscan_time   DateTime? @db.Time(0)
+  kat_izin_id        Int?      @default(0)
+  ket_status         String?   @db.VarChar(255)
+
+  @@id([pegawai_id, izin_tgl, izin_jenis_id, izin_status, izin_urutan])
+}
+
+model jam_kerja {
+  jk_id           Int      @id @default(0)
+  jk_name         String   @default("") @db.VarChar(100)
+  jk_kode         String   @default("") @db.VarChar(10)
+  use_set         Int      @default(0) @db.TinyInt
+  jk_bcin         DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  jk_cin          Int      @default(0) @db.SmallInt
+  jk_ecin         Int      @default(0) @db.SmallInt
+  jk_tol_late     Int      @default(0) @db.SmallInt
+  jk_use_ist      Int      @default(0) @db.TinyInt
+  jk_ist1         DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  jk_ist2         DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  jk_tol_early    Int      @default(0) @db.SmallInt
+  jk_bcout        Int      @default(0) @db.SmallInt
+  jk_cout         Int      @default(0) @db.SmallInt
+  jk_ecout        DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  use_eot         Int      @default(0) @db.TinyInt
+  min_eot         Int      @default(0) @db.SmallInt
+  max_eot         Int      @default(0) @db.SmallInt
+  reduce_eot      Int      @default(0) @db.SmallInt
+  jk_durasi       Int      @default(0) @db.TinyInt
+  jk_countas      Float    @default(0) @db.Float
+  jk_min_countas  Int      @default(0) @db.SmallInt
+  jk_min_countas2 Int      @default(0) @db.SmallInt
+  jk_ket          String?  @default("") @db.VarChar(100)
+}
+
+model jam_kerja_extra {
+  jke_tanggal DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  pegawai_id  Int      @default(0)
+  jk_id       Int      @default(0)
+  jke_libur   Int      @default(0) @db.TinyInt
+
+  @@id([jke_tanggal, pegawai_id])
+}
+
+model jatah_cuti {
+  pegawai_id        Int      @default(0)
+  jatah_c_mulai     DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jatah_c_akhir     DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  jatah_c_jml       Int?     @default(0) @db.SmallInt
+  jatah_c_hak_jml   Int?     @default(0) @db.SmallInt
+  jatah_c_ambil_jml Int?     @default(0) @db.SmallInt
+  jatah_c_utang_jml Int?     @default(0) @db.SmallInt
+
+  @@id([pegawai_id, jatah_c_mulai, jatah_c_akhir])
+}
+
+model jdw_kerja_d {
+  jdw_kerja_m_id    Int     @default(0)
+  jdw_kerja_d_idx   Int     @default(0) @db.SmallInt
+  jk_id             Int     @default(0)
+  jdw_kerja_d_hari  String? @db.VarChar(50)
+  jdw_kerja_d_libur Int?    @default(0) @db.TinyInt
+
+  @@id([jdw_kerja_m_id, jdw_kerja_d_idx, jk_id])
+}
+
+model jdw_kerja_m {
+  jdw_kerja_m_id         Int       @id @default(0)
+  jdw_kerja_m_kode       String?   @db.VarChar(5)
+  jdw_kerja_m_name       String?   @db.VarChar(100)
+  jdw_kerja_m_keterangan String?   @db.VarChar(255)
+  jdw_kerja_m_periode    Int?      @default(0) @db.SmallInt
+  jdw_kerja_m_mulai      DateTime? @db.Date
+  jdw_kerja_m_type       Int?      @default(0) @db.TinyInt
+  use_sama               Int?      @default(-1) @db.TinyInt
+}
+
+model jdw_kerja_pegawai {
+  pegawai_id        Int
+  jdw_kerja_m_id    Int
+  jdw_kerja_m_mulai DateTime @db.Date
+
+  @@id([pegawai_id, jdw_kerja_m_id, jdw_kerja_m_mulai])
+}
+
+model jns_izin {
+  izin_jenis_id   Int    @id @db.SmallInt
+  izin_jenis_name String @db.VarChar(200)
+  flag            Int    @default(0) @db.TinyInt
+}
+
+model kategori_izin {
+  kat_izin_id   Int     @id @default(0)
+  kat_izin_nama String? @db.VarChar(100)
+  izin_jenis_id Int?    @default(0) @db.SmallInt
+}
+
+model kontrak_kerja {
+  pegawai_id     Int      @default(0)
+  kontrak_start  DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  kontrak_end    DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  kontrak_status Int?     @default(0) @db.TinyInt
+  kontrak_aktif  Int?     @default(-1) @db.TinyInt
+
+  @@id([pegawai_id, kontrak_start, kontrak_end])
+}
+
+model lembur {
+  pegawai_id        Int      @default(0)
+  lembur_tgl        DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  lembur_mulai      DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  lembur_selesai    DateTime @default(dbgenerated("('00:00:00')")) @db.Time(0)
+  lembur_urut       Int      @db.TinyInt
+  type_ot           Int      @default(-1) @db.TinyInt
+  lembur_durasi_min Int?     @default(0) @db.SmallInt
+  lembur_durasi_max Int?     @default(0) @db.SmallInt
+  lembur_keperluan  String?  @default("") @db.VarChar(100)
+
+  @@id([pegawai_id, lembur_tgl, lembur_mulai, lembur_selesai])
+}
+
+model libur {
+  libur_tgl        DateTime @id @db.Date
+  libur_keterangan String?  @default("") @db.VarChar(255)
+  libur_status     Int?     @default(0) @db.TinyInt
+}
+
+model p_commands {
+  commands_sn         String   @db.VarChar(32)
+  commands_number     Int      @db.UnsignedInt
+  commands_data       String   @db.VarChar(2600)
+  commands_status     String   @default("7") @db.VarChar(3)
+  commands_type       String   @default("7") @db.VarChar(32)
+  commands_dateentry  DateTime @db.DateTime(0)
+  commands_datesend   DateTime @db.DateTime(0)
+  commands_datereturn DateTime @db.DateTime(0)
+  commands_datecancel DateTime @db.DateTime(0)
+
+  @@id([commands_sn, commands_number])
+  @@index([commands_sn], map: "commands_sn")
+}
+
+model p_emp {
+  pin  String  @id @db.VarChar(32)
+  nama String? @unique(map: "nama") @db.VarChar(255)
+  priv String? @db.VarChar(10)
+  pwd  String? @db.VarChar(10)
+  rfid String? @db.VarChar(32)
+  grp  String? @db.VarChar(5)
+  tz   String? @db.VarChar(20)
+}
+
+model p_tmp {
+  pin       String @db.VarChar(32)
+  fid       String @db.VarChar(2)
+  valid_str String @db.VarChar(2)
+  size_str  String @db.VarChar(5)
+  tmp       String @db.Text
+
+  @@id([pin, fid, valid_str])
+}
+
+model pegawai {
+  pegawai_id        Int       @id @default(0)
+  pegawai_pin       String    @unique(map: "pegawai_pin") @db.VarChar(32)
+  pegawai_nip       String?   @db.VarChar(30)
+  pegawai_nama      String    @db.VarChar(255)
+  pegawai_alias     String?   @db.VarChar(50)
+  pegawai_pwd       String    @default("0") @db.VarChar(10)
+  pegawai_rfid      String    @default("0") @db.VarChar(32)
+  pegawai_privilege String    @default("0") @db.VarChar(50)
+  pegawai_telp      String?   @db.VarChar(20)
+  pegawai_status    Int       @default(1) @db.TinyInt
+  tempat_lahir      String?   @db.VarChar(50)
+  tgl_lahir         DateTime? @db.Date
+  pembagian1_id     Int?      @default(0)
+  pembagian2_id     Int?      @default(0)
+  pembagian3_id     Int?      @default(0)
+  tgl_mulai_kerja   DateTime? @db.Date
+  tgl_resign        DateTime? @db.Date
+  gender            Int       @default(1) @db.TinyInt
+  tgl_masuk_pertama DateTime? @db.Date
+  photo_path        String?   @default("") @db.VarChar(255)
+  tmp_img           String?   @db.MediumText
+  nama_bank         String?   @default("") @db.VarChar(50)
+  nama_rek          String?   @default("") @db.VarChar(100)
+  no_rek            String?   @default("") @db.VarChar(20)
+  new_pegawai_id    Int?
+}
+
+model pegawai_d {
+  pegawai_id    Int     @unique(map: "pegawai_id")
+  pend_id       Int     @default(30)
+  gol_darah     Int     @default(1) @db.TinyInt
+  stat_nikah    Int     @default(1) @db.TinyInt
+  jml_anak      Int     @default(0) @db.TinyInt
+  alamat        String? @db.VarChar(200)
+  telp_extra    String  @default("") @db.VarChar(20)
+  hubungan      Int     @default(0) @db.TinyInt
+  nama_hubungan String  @default("") @db.VarChar(200)
+  agama         Int     @default(1) @db.TinyInt
+}
+
+model pegawai_status_pajak {
+  pegawai_id     Int @id
+  pegawai_status Int
+}
+
+model pembagian1 {
+  pembagian1_id   Int     @id @default(0)
+  pembagian1_nama String? @db.VarChar(100)
+  pembagian1_ket  String? @default("") @db.VarChar(255)
+}
+
+model pembagian2 {
+  pembagian2_id   Int     @id @default(0)
+  pembagian2_nama String? @db.VarChar(100)
+  pembagian2_ket  String? @default("") @db.VarChar(255)
+}
+
+model pembagian3 {
+  pembagian3_id   Int     @id @default(0)
+  pembagian3_nama String? @db.VarChar(100)
+  pembagian3_ket  String? @default("") @db.VarChar(255)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model pembulatan {
+  from_mnt   Int @db.TinyInt
+  to_mnt     Int @db.TinyInt
+  dibulatkan Int @db.TinyInt
+  value_mnt  Int @db.TinyInt
+
+  @@ignore
+}
+
+model pendidikan {
+  pend_id   Int    @id
+  pend_name String @db.VarChar(20)
+}
+
+model s_att_log {
+  sn         String   @db.VarChar(30)
+  scan_date  DateTime @db.DateTime(0)
+  pin        String   @db.VarChar(32)
+  verifymode Int
+  inoutmode  Int      @default(0)
+  reserved   Int      @default(0)
+  work_code  Int      @default(0)
+  att_id     String   @default("0") @db.VarChar(50)
+
+  @@id([sn, scan_date, pin])
+}
+
+model s_izin {
+  pegawai_id         Int       @default(0)
+  izin_urutan        Int       @default(0) @db.SmallInt
+  izin_tgl_pengajuan DateTime  @db.Date
+  izin_tgl           DateTime  @db.Date
+  izin_jenis_id      Int       @default(0) @db.SmallInt
+  izin_catatan       String?   @db.VarChar(255)
+  izin_status        Int       @default(1) @db.TinyInt
+  izin_tinggal_t1    DateTime? @db.Time(0)
+  izin_tinggal_t2    DateTime? @db.Time(0)
+  cuti_n_id          Int?      @default(0)
+  izin_ket_lain      String?   @db.VarChar(100)
+  izin_noscan_time   DateTime? @db.Time(0)
+  kat_izin_id        Int?      @default(0)
+  ket_status         String?   @db.VarChar(255)
+  action             Int       @default(1)
+
+  @@id([pegawai_id, izin_tgl, izin_jenis_id, izin_status, izin_urutan])
+}
+
+model server {
+  id_server   Int    @id
+  nama_server String @default("") @db.VarChar(50)
+  url_server  String @default("") @db.VarChar(50)
+}
+
+model server_use {
+  id_server_use   Int    @id
+  nama_server_use String @db.VarChar(50)
+  id_server       Int
+  apikey          String @db.VarChar(50)
+}
+
+model setting {
+  param_name  String  @id @default("") @db.VarChar(100)
+  param_value String? @default("") @db.VarChar(100)
+  keterangan  String? @default("") @db.VarChar(100)
+}
+
+model shift_result {
+  pegawai_id        Int      @default(0)
+  tgl_shift         DateTime @default(dbgenerated("('0000-00-00')")) @db.Date
+  khusus_lembur     Int      @default(0) @db.TinyInt
+  khusus_extra      Int      @default(0) @db.TinyInt
+  temp_id_auto      Int      @default(0)
+  jdw_kerja_m_id    Int      @default(0)
+  jk_id             Int      @default(0)
+  jns_dok           Int      @default(0) @db.TinyInt
+  izin_jenis_id     Int      @default(0) @db.SmallInt
+  cuti_n_id         Int      @default(0)
+  libur_umum        Int      @default(0) @db.TinyInt
+  libur_rutin       Int      @default(0) @db.TinyInt
+  jk_ot             Int      @default(0) @db.TinyInt
+  scan_in           DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  att_id_in         String   @default("0") @db.VarChar(50)
+  late_permission   Int      @default(0) @db.TinyInt
+  late_minute       Int      @default(0) @db.SmallInt
+  late              Float    @default(0) @db.Float
+  break_out         DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  att_id_break1     String   @default("0") @db.VarChar(50)
+  break_in          DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  att_id_break2     String   @default("0") @db.VarChar(50)
+  break_minute      Int      @default(0) @db.SmallInt
+  break             Float    @default(0) @db.Float
+  break_ot_minute   Int      @default(0) @db.SmallInt
+  break_ot          Float    @default(0) @db.Float
+  early_permission  Int      @default(0) @db.TinyInt
+  early_minute      Int      @default(0) @db.SmallInt
+  early             Float    @default(0) @db.Float
+  scan_out          DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  att_id_out        String   @default("0") @db.VarChar(50)
+  durasi_minute     Int      @default(0) @db.SmallInt
+  durasi            Float    @default(0) @db.Float
+  durasi_eot_minute Int      @default(0) @db.SmallInt
+  jk_count_as       Float    @default(0) @db.Float
+  status_jk         Int      @default(0) @db.TinyInt
+  keterangan        String?  @db.VarChar(255)
+
+  @@id([pegawai_id, tgl_shift, khusus_lembur, khusus_extra, temp_id_auto])
+  @@index([jdw_kerja_m_id], map: "jdw_kerja_m_id")
+  @@index([jk_id], map: "jk_id")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sms_group {
+  group_id   Int?
+  group_name String? @db.VarChar(50)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sms_group_member {
+  group_id    Int?
+  pegawai_pin String? @default("") @db.VarChar(32)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sms_recipient {
+  nama        String? @db.VarChar(50)
+  nomor_telp  String? @db.VarChar(20)
+  pegawai_pin String? @db.VarChar(32)
+  group_id    Int?
+  status      Int?
+
+  @@ignore
+}
+
+model sync_detail {
+  pegawai_id    Int
+  tgl           DateTime @db.Date
+  jk_id         Int
+  jdw_nama      String   @db.VarChar(100)
+  jk_nama       String   @db.VarChar(100)
+  jk_in         DateTime @db.Time(0)
+  scan_in       DateTime @db.Time(0)
+  jk_out        DateTime @db.Time(0)
+  scan_out      DateTime @db.Time(0)
+  hadir         Int      @db.TinyInt
+  hadir_mnt     Int      @db.SmallInt
+  terlambat     Int      @db.TinyInt
+  terlambat_mnt Int      @db.SmallInt
+  p_awal        Int      @db.TinyInt
+  p_awal_mnt    Int      @db.SmallInt
+  ist_mnt       Int      @db.SmallInt
+  ist_lebih     Int      @db.TinyInt
+  ist_lebih_mnt Int      @db.SmallInt
+  scan1         Int      @db.TinyInt
+  lembur        Int      @db.TinyInt
+  lembur_mnt    Int      @db.SmallInt
+  libur         Int      @db.TinyInt
+  tdk_hadir     Int      @db.TinyInt
+  izin_01       Int      @db.TinyInt
+  izin_02       Int      @db.TinyInt
+  izin_03       Int      @db.TinyInt
+  izin_04       Int      @db.TinyInt
+  izin_05       Int      @db.TinyInt
+  izin_06       Int      @db.TinyInt
+  izin_07       Int      @db.TinyInt
+  izin_08       Int      @db.TinyInt
+  izin_09       Int      @db.TinyInt
+  izin_10       Int      @db.TinyInt
+  izin_11       Int      @db.TinyInt
+  izin_12       Int      @db.TinyInt
+  izin_13       Int      @db.TinyInt
+  izin_14       Int      @db.TinyInt
+  izin_15       Int      @db.TinyInt
+  izin_16       Int      @db.TinyInt
+  izin_17       Int      @db.TinyInt
+  izin_18       Int      @db.TinyInt
+  izin_19       Int      @db.TinyInt
+
+  @@id([pegawai_id, tgl, jk_id])
+}
+
+model sync_rekap {
+  pegawai_id    Int
+  bulan         Int
+  tahun         Int
+  hadir         Int @db.TinyInt
+  hadir_mnt     Int @db.SmallInt
+  terlambat     Int @db.TinyInt
+  terlambat_mnt Int @db.SmallInt
+  p_awal        Int @db.TinyInt
+  p_awal_mnt    Int @db.SmallInt
+  ist_mnt       Int @db.SmallInt
+  ist_lebih     Int @db.TinyInt
+  ist_lebih_mnt Int @db.SmallInt
+  scan1         Int @db.TinyInt
+  lembur        Int @db.TinyInt
+  lembur_mnt    Int @db.SmallInt
+  libur         Int @db.TinyInt
+  tdk_hadir     Int @db.TinyInt
+  izin_01       Int @db.TinyInt
+  izin_02       Int @db.TinyInt
+  izin_03       Int @db.TinyInt
+  izin_04       Int @db.TinyInt
+  izin_05       Int @db.TinyInt
+  izin_06       Int @db.TinyInt
+  izin_07       Int @db.TinyInt
+  izin_08       Int @db.TinyInt
+  izin_09       Int @db.TinyInt
+  izin_10       Int @db.TinyInt
+  izin_11       Int @db.TinyInt
+  izin_12       Int @db.TinyInt
+  izin_13       Int @db.TinyInt
+  izin_14       Int @db.TinyInt
+  izin_15       Int @db.TinyInt
+  izin_16       Int @db.TinyInt
+  izin_17       Int @db.TinyInt
+  izin_18       Int @db.TinyInt
+  izin_19       Int @db.TinyInt
+
+  @@id([pegawai_id, bulan, tahun])
+}
+
+model t_syn {
+  syn_id     BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  syn_date   DateTime @db.DateTime(0)
+  syn_action Int      @db.TinyInt
+  to_table   String   @db.VarChar(100)
+  syn_data   String   @db.Text
+  flag       Int      @default(0) @db.TinyInt
+  md5        String   @default("0") @db.VarChar(50)
+}
+
+model t_syn_temp {
+  id Int @id @db.UnsignedInt
+}
+
+model temp_pegawai {
+  pegawai_id  Int       @id @default(0)
+  tgl_mulai   DateTime? @db.Date
+  tgl_selesai DateTime? @db.Date
+}
+
+model temp_pin {
+  pin String @id @default("0") @db.VarChar(32)
+}
+
+model tmp {
+  pin        String @db.VarChar(32)
+  finger_idx Int    @db.TinyInt
+  alg_ver    Int    @db.TinyInt
+  template1  String @db.Text
+
+  @@id([pin, finger_idx, alg_ver])
+}
+
+model tmp_uareu {
+  pin        String @db.VarChar(32)
+  finger_idx Int    @db.TinyInt
+  alg_ver    Int    @db.TinyInt
+  template1  String @db.Text
+
+  @@id([pin, finger_idx, alg_ver])
+}
+
+model tukar_jam {
+  tukar_tgl   DateTime @db.Date
+  pegawai_id1 Int      @default(0)
+  pegawai_id2 Int      @default(0)
+  alasan      String?  @db.VarChar(255)
+
+  @@id([tukar_tgl, pegawai_id1, pegawai_id2])
+}
+
+model uareu_device {
+  device_id         Int     @id @default(autoincrement())
+  uau_device_name   String? @db.VarChar(100)
+  uau_serial_number String? @db.VarChar(255)
+  uau_verification  String? @db.VarChar(255)
+  uau_activation    String? @db.VarChar(255)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model user_log {
+  login_id  String   @db.VarChar(50)
+  log_date  DateTime @db.DateTime(0)
+  module    Int
+  tipe_log  Int      @db.TinyInt
+  nama_data String   @db.VarChar(250)
+  log_note  String   @db.VarChar(300)
+
+  @@ignore
+}
+
+model user_login {
+  login_id        String   @id @db.VarChar(50)
+  login_pwd       String   @db.VarChar(32)
+  grp_user_id     Int      @default(1) @db.TinyInt
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+}
+
+model versi_db {
+  no_id      Int     @id @db.SmallInt
+  versi_db   String  @default("@") @db.VarChar(100)
+  keterangan String? @db.Text
+}
+
+model z_pay_com {
+  com_id          Int      @id @db.SmallInt
+  com_kode        String   @db.VarChar(50)
+  com_name        String   @db.VarChar(100)
+  type_com        Int      @default(0) @db.TinyInt
+  fluctuate       Int      @default(0) @db.TinyInt
+  no_urut         Int      @db.SmallInt
+  param           Int      @default(0) @db.TinyInt
+  hitung          Int      @default(1) @db.TinyInt
+  dibayar         Int      @default(2) @db.TinyInt
+  cara_bayar      Int      @default(1) @db.TinyInt
+  pinjaman        Int      @default(0) @db.TinyInt
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+
+  @@index([com_id], map: "com_id")
+}
+
+model z_pay_grp {
+  grp_id           Int      @id @db.SmallInt
+  kode_grp         String   @db.VarChar(50)
+  grp_name         String   @db.VarChar(100)
+  use_pengurang    Int      @default(0) @db.TinyInt
+  type_pengurang   Int      @default(0) @db.TinyInt
+  pengurang_persen Float    @default(0) @db.Float
+  lastupdate_date  DateTime @db.DateTime(0)
+  lastupdate_user  String   @db.VarChar(50)
+}
+
+model z_pay_grp_com {
+  grp_id        Int    @db.SmallInt
+  com_id        Int    @db.SmallInt
+  no_urut_ref   Int    @db.SmallInt
+  use_if_sum    Int    @default(0) @db.TinyInt
+  use_kode_if   Int    @default(0) @db.TinyInt
+  id_kode_if    Int    @default(0) @db.SmallInt
+  min_if        Float  @default(0) @db.Float
+  max_if        Float  @default(0) @db.Float
+  use_sum       Int    @default(0) @db.TinyInt
+  use_kode_sum  Int    @default(0) @db.TinyInt
+  id_kode_sum   Int    @default(0) @db.SmallInt
+  operator_sum  String @default("0") @db.VarChar(50)
+  konstanta_sum Float  @default(0) @db.Float
+  operator_sum2 String @default("0") @db.VarChar(50)
+  nilai_rp      Float  @default(0) @db.Float
+  hitung        Int    @default(0) @db.TinyInt
+  jenis         Int    @default(0) @db.TinyInt
+
+  @@id([com_id, grp_id, no_urut_ref])
+}
+
+model z_pay_grp_emp {
+  grp_id      Int    @db.SmallInt
+  emp_id_auto Int
+  no_rek      String @db.VarChar(50)
+
+  @@id([grp_id, emp_id_auto])
+  @@index([emp_id_auto], map: "emp_id_auto")
+  @@index([grp_id], map: "grp_id")
+}
+
+model z_pay_money {
+  com_id          Int      @db.SmallInt
+  grp_id          Int      @db.SmallInt
+  emp_id_auto     Int
+  nilai_rp        Float    @db.Float
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+
+  @@id([com_id, grp_id, emp_id_auto])
+  @@index([com_id], map: "com_id")
+  @@index([emp_id_auto], map: "emp_id_auto")
+  @@index([grp_id], map: "grp_id")
+}
+
+model z_pay_process_d {
+  process_id  Int
+  no_urut     Int   @db.SmallInt
+  emp_id_auto Int
+  tot_payroll Float @db.Float
+
+  @@id([process_id, no_urut])
+}
+
+model z_pay_process_m {
+  process_id      Int       @id
+  process_name    String    @db.VarChar(250)
+  date1           DateTime  @db.Date
+  date2           DateTime  @db.Date
+  payment_date    DateTime? @db.Date
+  round_value     Float     @db.Float
+  tot_process     Float     @db.Float
+  create_by       String?   @db.VarChar(100)
+  check_by        String?   @db.VarChar(100)
+  approve_by      String?   @db.VarChar(100)
+  keterangan      String?   @db.VarChar(255)
+  lastupdate_date DateTime  @db.DateTime(0)
+  lastupdate_user String    @db.VarChar(50)
+}
+
+model z_pay_process_sd {
+  process_id     Int
+  no_urut        Int    @db.SmallInt
+  no_urut_ref    Int    @db.SmallInt
+  emp_id_auto    Int
+  com_id         Int    @db.SmallInt
+  kondisi        String @default("0") @db.VarChar(100)
+  rumus          String @default("0") @db.VarChar(100)
+  subtot_payroll Float  @db.Float
+  jml_faktor     Float  @default(0) @db.Float
+
+  @@id([process_id, no_urut, no_urut_ref])
+}
+
+model z_pay_report {
+  id_kode_report Int    @id @db.TinyInt
+  report_code    String @db.VarChar(50)
+  report_name    String @db.VarChar(200)
+}
+
+model zx_bayar_kredit {
+  id_bayar        Int      @id
+  tgl_bayar       DateTime @db.Date
+  id_kredit       Int
+  no_urut         Int      @db.SmallInt
+  tgl_jt          DateTime @db.Date
+  debet           Float    @db.Float
+  angs_pokok      Float    @db.Float
+  bunga           Float    @db.Float
+  emp_id_auto     Int
+  keterangan      String   @db.VarChar(300)
+  status          Int      @default(0) @db.TinyInt
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+
+  @@index([id_kredit], map: "id_kredit")
+  @@index([tgl_jt], map: "tgl_jt")
+}
+
+model zx_jns_krd {
+  krd_id          Int      @id @db.TinyInt
+  krd_kode        String   @db.VarChar(10)
+  krd_name        String   @db.VarChar(100)
+  com_id          Int      @db.SmallInt
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+}
+
+model zx_kredit_d {
+  id_kredit    Int
+  no_urut      Int      @db.SmallInt
+  tgl_jt       DateTime @db.Date
+  saldo_aw     Float    @db.Float
+  debet        Float    @db.Float
+  angs_pokok   Float    @db.Float
+  bunga        Float    @db.Float
+  saldo_akh    Float    @db.Float
+  proses_bayar Int      @default(0) @db.TinyInt
+  keterangan   String   @db.VarChar(300)
+
+  @@id([id_kredit, no_urut])
+}
+
+model zx_kredit_m {
+  id_kredit       Int      @id
+  no_kredit       String   @db.VarChar(100)
+  tgl_kredit      DateTime @db.Date
+  emp_id_auto     Int
+  krd_id          Int      @db.TinyInt
+  cara_hitung     Int      @default(0) @db.TinyInt
+  tot_kredit      Float    @db.Float
+  saldo_aw        Float    @db.Float
+  suku_bunga      Float
+  periode_bulan   Int      @db.SmallInt
+  angs_pokok      Float    @db.Float
+  angs_pertama    DateTime @db.Date
+  tot_debet       Float    @db.Float
+  tot_angs_pokok  Float    @db.Float
+  tot_bunga       Float    @db.Float
+  def_pembulatan  Int      @db.SmallInt
+  jumlah_piutang  Float    @db.Float
+  approv_by       String   @db.VarChar(200)
+  keterangan      String   @db.VarChar(1000)
+  status          Int      @default(0) @db.TinyInt
+  status_lunas    Int      @default(0) @db.TinyInt
+  lastupdate_date DateTime @db.DateTime(0)
+  lastupdate_user String   @db.VarChar(50)
+}
