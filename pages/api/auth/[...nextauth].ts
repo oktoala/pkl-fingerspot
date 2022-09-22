@@ -23,15 +23,27 @@ const authOptions: NextAuthOptions = {
           },
         });
 
-        if (user && password === user.pegawai_nip) {
-          return user;
+        if (!user && password === user!.pegawai_nip) {
+          throw new Error("Error Login");
         }
-      throw new Error('Error Login');
+
+        return { name: user?.pegawai_pin };
       },
     }),
   ],
   pages: {
     signIn: "/login",
+  },
+  callbacks: {
+    async session({ session, token, user }) {
+      const pegawaii = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_pin: session.user?.name as string | undefined
+        },
+      });
+      session.pegawai = pegawaii;
+      return session;
+    },
   },
 };
 

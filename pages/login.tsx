@@ -10,10 +10,8 @@ const Login: NextPage = (props): JSX.Element => {
 
     const res = await signIn("credentials", {
       password: user.password,
-      redirect: false
-    },);
-
-    console.log(res);
+      callbackUrl: '/'
+    });
   };
   return (
     <>
