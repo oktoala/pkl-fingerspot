@@ -1,10 +1,12 @@
-// import {  PrismaClient } from "@prisma/client";
 import { NextPage } from "next";
 import Head from "next/head";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { FormEventHandler, useState } from "react";
+import  Router  from "next/router";
 const Login: NextPage = (props): JSX.Element => {
   const [user, setUser] = useState({ password: "" });
+  const {status} = useSession();
+
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
@@ -13,6 +15,9 @@ const Login: NextPage = (props): JSX.Element => {
       callbackUrl: '/'
     });
   };
+  if (status === 'authenticated') {
+    Router.replace('/');
+  }
   return (
     <>
       <Head>
