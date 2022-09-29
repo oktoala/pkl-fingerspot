@@ -4,11 +4,11 @@ import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { useRef, useState } from "react";
 import { DownloadTableExcel } from "react-export-table-to-excel";
-import { Pegawaii } from "./utils/interfaces";
+import { Pegawaii } from "./components/Header";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import { useAtom } from "jotai";
-import { dateState } from "./utils/state";
+import { dateState } from "./components/Header";
 
 const Home: NextPage = (): JSX.Element => {
   const { status, data } = useSession({
@@ -42,7 +42,7 @@ const Home: NextPage = (): JSX.Element => {
               currentTableRef={tableRef.current}
               sheet="sheet1"
             >
-              <button className="bg-green-500 p-2 text-sm rounded-md text-white">
+              <button className="bg-green-500 hover:bg-green-400 p-2 text-sm rounded-md text-white">
                 Download Excel
               </button>
             </DownloadTableExcel>
@@ -83,13 +83,17 @@ const Home: NextPage = (): JSX.Element => {
                         <td className="td">{users.departemen}</td>
                         <td className="td">{users.kantor}</td>
                         <td className="td">{e.tanggal}</td>
-                        {e.scan.reverse().map((e, i) => {
-                          return (
-                            <td key={i + e} className="td">
-                              {e}
-                            </td>
-                          );
-                        })}
+                        {e.scan
+                          .sort((a, b) => {
+                            return a.scanParse - b.scanParse;
+                          })
+                          .map((e, i) => {
+                            return (
+                              <td key={i} className="td">
+                                {e.scanStr}
+                              </td>
+                            );
+                          })}
                       </tr>
                     );
                   } else {

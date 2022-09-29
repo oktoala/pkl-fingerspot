@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
-import { DateScan, Pegawaii } from "../../utils/interfaces";
+import { DateScan, Pegawaii, Scan } from "../../components/Header";
 
 const prisma = new PrismaClient();
 const months = [
@@ -111,9 +111,12 @@ const authOptions: NextAuthOptions = {
           scan: [],
           dateParse: 0,
         };
+        const scans: Scan = {
+          scanParse: 0,
+          scanStr: ""
+        }
 
         const date = new Date(`${e.scan_date}`);
-        // console.log(`${date} - ${date.getUTCHours()}`);
 
         const tanggal = date.getDate();
         const bulan = months[date.getMonth()];
@@ -122,12 +125,14 @@ const authOptions: NextAuthOptions = {
         const jam = date.getUTCHours();
         const menit = date.getMinutes();
         const detik = date.getSeconds();
-
-        // console.log(`${dateCurr === dateOld} - ${tanggal} - ${index}`);
+        const scanParse = Date.parse(`${bulan} ${tanggal}, ${tahun} ${jam}:${menit}:${detik}`);
+        scans.scanParse = scanParse;
+        scans.scanStr = `${jam}:${menit}:${detik}`;
 
         if (dateCurr === dateOld) {
-          // console.log(users.data[index]);
-          users.data[index].scan.push(`${jam}:${menit}:${detik}`);
+          console.log(users.data[index].scan);
+          users.data[index].scan.push(scans);
+          console.log(new Date());
           go = false;
           scanLen = scanLen < users.data[index].scan.length ? users.data[index].scan.length : scanLen;
         }
@@ -139,12 +144,14 @@ const authOptions: NextAuthOptions = {
 
         if (go) {
           dateScan.tanggal = `${tanggal}-${bulan}-${tahun}`;
-          dateScan.scan?.push(`${jam}:${menit}:${detik}`);
+          dateScan.scan?.push(scans);
           dateScan.dateParse = dateCurr;
           users.data.push(dateScan);
           dateOld = dateCurr;
         }
       });
+      
+
 
       users.scanLen = scanLen;
       session.users = users;

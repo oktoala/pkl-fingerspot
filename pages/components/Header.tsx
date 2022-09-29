@@ -1,11 +1,47 @@
 import { pegawai } from "@prisma/client";
-import { useAtom } from "jotai";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Pegawaii } from "../utils/interfaces";
-import { dateState } from "../utils/state";
 import { DateRange, Range, RangeKeyDict } from "react-date-range";
 import { useState } from "react";
+import { atom, useAtom } from "jotai";
+
+// Atom
+export const dateState = atom<Range[]>([
+  {
+    startDate: new Date("2018-01-01"),
+    endDate: new Date(),
+  },
+]);
+
+
+// Interfaces
+export interface Pegawaii {
+  nip: string | null | undefined;
+  nama: string | undefined;
+  jabatan: string | null | undefined;
+  departemen: string | null | undefined;
+  kantor: string | null | undefined;
+  data: DateScan[];
+  scanLen: number;
+}
+
+export interface DateScan {
+  tanggal: string | undefined;
+  scan: Scan[];
+  dateParse: number;
+}
+
+export interface Scan {
+  scanStr: string;
+  scanParse: number;
+}
+
+
+export interface Selection {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+}
 
 const Header = () => {
   const [state, setState] = useAtom(dateState);
@@ -38,7 +74,7 @@ const Header = () => {
                 </a>
                 <button
                   onClick={() => setShow(!show)}
-                  className={`border-2 border-orange-500 ${show ? 'bg-orange-500 text-white' : 'text-orange-500'} p-2 rounded-md mr-10 `}
+                  className={`border-2 border-orange-500 ${show ? 'bg-orange-500 text-white font-bold' : 'text-orange-500'} p-2 rounded-md mr-10 `}
                 >
                 {startDate?.getDate()}-{startDate?.getMonth()}-{startDate?.getFullYear()}{" "}/{" "}
                 {endDate?.getDate()}-{endDate?.getMonth()}-{endDate?.getFullYear()} 
