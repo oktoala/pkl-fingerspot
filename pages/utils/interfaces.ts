@@ -13,3 +13,10 @@ export interface DateScan {
   scan: string[];
   dateParse: number;
 }
+
+export interface Selection {
+  startDate: Date;
+  endDate: Date;
+  key: string;
+}
+

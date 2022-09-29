@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
-import { DateScan, Pegawaii } from "../../lib/interfaces";
+import { DateScan, Pegawaii } from "../../utils/interfaces";
 
 const prisma = new PrismaClient();
 const months = [
@@ -80,7 +80,7 @@ const authOptions: NextAuthOptions = {
       });
       const kantor = await prisma.pembagian3.findFirst({
         where: {
-          pembagian3_id: pegawaii?.pembagian1_id as number | undefined,
+          pembagian3_id: pegawaii?.pembagian3_id as number | undefined,
         },
       });
 
@@ -129,7 +129,7 @@ const authOptions: NextAuthOptions = {
           // console.log(users.data[index]);
           users.data[index].scan.push(`${jam}:${menit}:${detik}`);
           go = false;
-          // console.log("Kesini");
+          scanLen = scanLen < users.data[index].scan.length ? users.data[index].scan.length : scanLen;
         }
         if (dateCurr !== dateOld && i > 0) {
           // console.log("Kesana");
@@ -144,14 +144,9 @@ const authOptions: NextAuthOptions = {
           users.data.push(dateScan);
           dateOld = dateCurr;
         }
-        // scanLen = j
       });
 
-      console.log(users.data);
-
-
-      session.pegawai = pegawaii;
-      session.attendances = attendances;
+      users.scanLen = scanLen;
       session.users = users;
       return session;
     },
