@@ -5,6 +5,8 @@ import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { pegawai, att_log } from "@prisma/client";
 
+import { DateScan, Pegawaii } from "./lib/interfaces";
+
 const Home: NextPage = (): JSX.Element => {
   const { status, data } = useSession({
     required: true,
@@ -14,6 +16,7 @@ const Home: NextPage = (): JSX.Element => {
   });
   const pegawaii = data?.pegawai as pegawai;
   const attendance = data?.attendances as att_log[];
+  const users = data?.users as Pegawaii;
   const months = [
     "Januari",
     "Februari",
@@ -52,43 +55,35 @@ const Home: NextPage = (): JSX.Element => {
           <table className="border-collapse table-auto w-full text-sm">
             <thead>
               <tr>
+                <th className="th">No</th>
                 <th className="th">ID</th>
                 <th className="th">Nama</th>
+                <th className="th">Jabatan</th>
+                <th className="th">Departemen</th>
+                <th className="th">Kantor</th>
                 <th className="th">Tanggal</th>
-                <th className="th">UTC</th>
                 <th className="th">Scan 1</th>
                 <th className="th">Scan 2</th>
-                <th className="th">Scan 3</th>
-                <th className="th">Scan 4</th>
-                <th className="th">Scan 5</th>
-                <th className="th">Scan 6</th>
-                <th className="th">Scan 7</th>
-                <th className="th">Scan 8</th>
-                <th className="th">Scan 9</th>
               </tr>
             </thead>
             <tbody className="bg-white ">
-              {attendance.map((e, i) => {
-                const index = i + 1;
-                const date = new Date(e.scan_date);
-                const tanggal = date.getDate();
-                const bulan = months[date.getMonth()];
-                const tahun = date.getFullYear();
-                if (i < attendance.length-1) {
-                  if (
-                    tanggal === new Date(attendance[index].scan_date).getDate()
-                  ) {
-                    console.log("Sama");
-                  }
-                }
+              {users.data.map((e, i) => {
                 return (
                   <tr key={i}>
-                    <td className="td">{index}</td>
-                    <td className="td">{pegawaii.pegawai_nama}</td>
-                    <td className="td">
-                      {tanggal}-{bulan}-{tahun}
-                    </td>
-                    <td className="td">{e.scan_date.toString()}</td>
+                    <td className="td">{++i}</td>
+                    <td className="td">{users.nip}</td>
+                    <td className="td">{users.nama}</td>
+                    <td className="td">{users.jabatan}</td>
+                    <td className="td">{users.departemen}</td>
+                    <td className="td">{users.kantor}</td>
+                    <td className="td">{e.tanggal}</td>
+                    {e.scan.reverse().map((e, i) => {
+                      return (
+                        <td key={i + e} className="td">
+                          {e}
+                        </td>
+                      );
+                    })}
                   </tr>
                 );
               })}

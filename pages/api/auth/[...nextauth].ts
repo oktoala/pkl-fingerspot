@@ -88,6 +88,9 @@ const authOptions: NextAuthOptions = {
         where: {
           pin: session.user?.name as string | undefined,
         },
+        orderBy: {
+          scan_date: "asc",
+        },
       });
 
       // Insert to user
@@ -102,26 +105,36 @@ const authOptions: NextAuthOptions = {
       let index = 0;
       let scanLen = 0;
 
-      attendances.forEach((e) => {
+      attendances.forEach((e, i) => {
         const dateScan: DateScan = {
           tanggal: undefined,
           scan: [],
           dateParse: 0,
         };
-        const date = new Date(`${e.scan_date}-0800`);
+
+        const date = new Date(`${e.scan_date}`);
+        // console.log(`${date} - ${date.getUTCHours()}`);
+
         const tanggal = date.getDate();
         const bulan = months[date.getMonth()];
         const tahun = date.getFullYear();
         const dateCurr = Date.parse(`${bulan} ${tanggal}, ${tahun}`);
-        const jam = date.getHours();
+        const jam = date.getUTCHours();
         const menit = date.getMinutes();
         const detik = date.getSeconds();
-        
+
+        // console.log(`${dateCurr === dateOld} - ${tanggal} - ${index}`);
 
         if (dateCurr === dateOld) {
-          console.log(users.data[index]);
+          // console.log(users.data[index]);
           users.data[index].scan.push(`${jam}:${menit}:${detik}`);
           go = false;
+          // console.log("Kesini");
+        }
+        if (dateCurr !== dateOld && i > 0) {
+          // console.log("Kesana");
+          go = true;
+          index++;
         }
 
         if (go) {
@@ -131,17 +144,15 @@ const authOptions: NextAuthOptions = {
           users.data.push(dateScan);
           dateOld = dateCurr;
         }
-
-        if (!go) {
-          go = true
-          index++;
-        }
+        // scanLen = j
       });
 
       console.log(users.data);
 
+
       session.pegawai = pegawaii;
       session.attendances = attendances;
+      session.users = users;
       return session;
     },
   },
