@@ -130,14 +130,11 @@ const authOptions: NextAuthOptions = {
         scans.scanStr = `${jam}:${menit}:${detik}`;
 
         if (dateCurr === dateOld) {
-          console.log(users.data[index].scan);
           users.data[index].scan.push(scans);
-          console.log(new Date());
           go = false;
           scanLen = scanLen < users.data[index].scan.length ? users.data[index].scan.length : scanLen;
         }
         if (dateCurr !== dateOld && i > 0) {
-          // console.log("Kesana");
           go = true;
           index++;
         }
